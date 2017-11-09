@@ -1,8 +1,10 @@
 # Apple 2 Soft Switch
 
-Inspired by Anthony's program here is a Applesoft BASIC program to display a memory map and limited soft switches.
+Inspired by Anthony's program over in [c.s.a2](https://groups.google.com/d/msg/comp.sys.apple2/knWRdHp9ZTc/TWV5ZkyTCQAJ) here is a Applesoft BASIC program to display a memory map and limited soft switches.
 
-![Screenshot](pics/screenshot.png)
+![Screenshot Desc](pics/screenshot_desc.png)
+![Screenshot Addr](pics/screenshot_addr.png)
+
 
 # Commands
 
