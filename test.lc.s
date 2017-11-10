@@ -1,3 +1,5 @@
+; https://github.com/Michaelangel007/apple2_softswitch
+;
 ; What happens to HIGH RAM on Set ALTZP $C009?
 ; Init 0.
 ;         Aux  LC RAM = 'A'
@@ -7,25 +9,11 @@
 ; Test 3. n/a  LC ROM
 ; ====================
 
-STORE80     = $C000
-
-RDMAINRAM   = $C002
-RDCARDRAM   = $C003
-
-WRMAINRAM   = $C004
-WRCARDRAM   = $C005
-
 SETSTDZP    = $C008
 SETALTZP    = $C009
 
 ROMIN2      = $C082
 LCBANK2     = $C083 ; Must be LOAD x2
-
-MOV_SRC     = $003C ; A1L
-MOV_END     = $003E ; A2L
-MOV_DST     = $0042 ; A4L
-AUXMOVE     = $C311 ; C=0 Aux->Main, C=1 Main->Aux
-MOVE        = $FE2C ; Main<->Main, *MUST* set Y=0 prior!
 
 ; We want an address in ROM that has a printable byte 'R' = $92
 ;across all ROM versions
@@ -49,37 +37,9 @@ OUT_3       = $482
 
     ORG $300        ; Yes, on the stack
 
-__LEN = __END - __MAIN
-
 __MAIN
-     STA STORE80     ; Allow RD*RAM and WR*RAM to work
-
-; 22 bytes
-;    LDA #0
-;    LDX #<__END
-;    LDY #>__MAIN
-;    STA MOV_SRC+0
-;    STX MOV_END+0
-;    STA MOV_DST+0
-;    STY MOV_SRC+1
-;    STY MOV_END+1
-;    STY MOV_DST+1
-;    SEC             ;  C=1 Main->Aux
-;    JSR AUXMOVE
-
-; 17 bytes
-    LDX #<__END
-    STA RDMAINRAM
-    STA WRCARDRAM
-Copy2Aux
-    LDA __MAIN,X
-    STA __MAIN,X
-    DEX
-    BNE Copy2Aux    ; off-by-one bug but is OK
-
     STA ROMIN2      ; bank LC ROM
     LDA TEST
-    STA WRMAINRAM
     STA SAVE_R      ; save original ROM $E000
 
     LDA LCBANK2     ; Enable LC RAM read
@@ -111,7 +71,7 @@ SaveE000
 
 ; Test 3 = n/a  LC ROM
     STA ROMIN2
-    STA SETALTZP    ; moment of truth - won't matter if STD or ALT
+    STA SETALTZP    ; moment of truth - won't matter if STDZP or ALTZP
     LDY TEST        ; should be ROM
     STY OUT_3
 
@@ -121,12 +81,11 @@ LoadE000
 
     LDX SAVE_A
     LDY SAVE_M
+;   STA TESTALTZP   ; OPTIMIZATION: set above
     STX TEST        ; restore CARD $E000
     STA SETSTDZP
     STY TEST        ; restore MAIN $E000
 
     STA ROMIN2      ; ROM
-    STA STORE80+1   ;
     RTS
-__END
 
