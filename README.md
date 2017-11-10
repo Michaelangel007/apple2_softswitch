@@ -19,8 +19,7 @@ b) some require multiple locations to activate (i.e. TEXT/GR and Lo-Res/Hi-Res)
 
 # Future Versions?
 
-Removing the `RW` columns gives us a little more space on the right
-Mock-up
+Removing the `RW` columns gives us a little more space on the right. Here is a mock-up:
 
 ```
 v4    ___READ___ __WRITE___   
